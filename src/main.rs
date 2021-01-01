@@ -2,11 +2,11 @@ use std::path::Path;
 
 use clap::{App, AppSettings, Arg};
 
-use libwyag;
+use wyag;
 
 // https://github.com/clap-rs/clap/blob/master/examples/20_subcommands.rs
 fn main() {
-    let mut app = App::new("wyag")
+    let app = App::new("wyag")
         .about("Write your own git")
         .version("0.1")
         .author("Jan-Christoph Klie")
@@ -27,7 +27,7 @@ fn main() {
         Some(("init", init_matches)) => {
             let raw_path = init_matches.value_of("path").unwrap();
             let path = Path::new(raw_path);
-            libwyag::GitRepository::create_new(path).unwrap();
+            wyag::GitRepository::init(path).unwrap();
         }
         _ => unreachable!(),
     }

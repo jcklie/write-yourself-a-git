@@ -16,7 +16,7 @@ tempfile = "3.1.0"
 fs_extra = "1.2.0"
 
 [lib]
-name = "libwyag"
+name = "wyag"
 path = "src/lib.rs"
 
 [[bin]]
