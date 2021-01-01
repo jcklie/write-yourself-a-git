@@ -1,4 +1,5 @@
 use std::path::Path;
+use std::{io, io::Write};
 
 use clap::{App, AppSettings, Arg};
 
@@ -19,6 +20,15 @@ fn main() {
                         .required(true),
                 ),
         )
+        .subcommand(
+            App::new("cat-file")
+                .about("Provide content of repository objects.")
+                .arg(
+                    Arg::new("object")
+                        .about("Hash of the object to display.")
+                        .required(true),
+                ),
+        )
         .setting(AppSettings::ArgRequiredElseHelp);
 
     let matches = app.get_matches();
@@ -29,6 +39,23 @@ fn main() {
             let path = Path::new(raw_path);
             wyag::GitRepository::init(path).unwrap();
         }
+        Some(("cat-file", init_matches)) => {
+            let object = init_matches.value_of("object").unwrap();
+            let cwd = std::env::current_dir().unwrap();
+            let path = wyag::find_repository(cwd).unwrap();
+
+            let repository = wyag::GitRepository::from_existing(&path).unwrap();
+
+            let git_object = repository.read_object(object).unwrap();
+
+            match git_object {
+                wyag::GitObject::GitBlob { data } => {
+                    io::stdout().write(&data).unwrap();
+                }
+                _ => unimplemented!(),
+            }
+        }
+
         _ => unreachable!(),
     }
 }

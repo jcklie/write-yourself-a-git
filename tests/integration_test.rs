@@ -25,3 +25,22 @@ fn test_opening_nonexistent_repo_should_fail() {
         e => panic!("Expected 'RepositoryNotFound', but got '{:#?}'", e),
     }
 }
+
+#[test]
+fn test_cat_file_with_existing_blob() {
+    let cwd = std::env::current_dir().unwrap();
+    let path = wyag::find_repository(cwd).unwrap();
+
+    let repository = wyag::GitRepository::from_existing(&path).unwrap();
+
+    let hash = "3ffe1398195ef384e2edbfd29d05516a33299e43";
+
+    let git_object = repository.read_object(hash).unwrap();
+
+    if let wyag::GitObject::GitBlob { data } = git_object {
+        let text = String::from_utf8(data).unwrap();
+        assert_eq!(text, "Lorem ipsum dolor sit amet.");
+    } else {
+        panic!("Expected GitBlob");
+    }
+}

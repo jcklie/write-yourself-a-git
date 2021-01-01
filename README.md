@@ -5,7 +5,7 @@ This is a Rust implementation of [git](https://git-scm.com/) following the excel
 Implemented are the following commands:
 
 - [ ] add
-- [ ] cat-file
+- [x] cat-file
 - [ ] checkout
 - [ ] commit
 - [ ] hash-object
